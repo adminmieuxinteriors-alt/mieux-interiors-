@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card, Col, Row, Space, Typography, Rate, Spin, App as AntApp } from "antd";
-import { ArrowRightOutlined, RightOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, RightOutlined, LeftOutlined } from "@ant-design/icons";
 import MediaCardSlider from "@/components/public/MediaCardSlider";
 
 const { Title, Paragraph, Text } = Typography;
@@ -16,6 +16,8 @@ export default function HomePage() {
   const [testimonials, setTestimonials] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleProtectedLinkClick = (e: React.MouseEvent, dest: string) => {
     const isLoggedIn = document.cookie.includes("mieux_user_logged_in=true");
@@ -138,6 +140,8 @@ export default function HomePage() {
       }
     }
     fetchData();
+    setIsLoggedIn(document.cookie.includes("mieux_user_logged_in=true"));
+    setIsAdmin(document.cookie.includes("mieux_admin_logged_in=true"));
   }, []);
 
   // Testimonial sliding carousel logic
@@ -178,6 +182,46 @@ export default function HomePage() {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [testimonials.length, visibleCount]);
+
+  const handlePrev = () => {
+    if (testimonials.length === 0) return;
+    setActiveIndex((prev) => {
+      const prevIndex = prev - 1;
+      if (prevIndex < 0) {
+        return Math.max(0, testimonials.length - visibleCount);
+      }
+      return prevIndex;
+    });
+    resetAutoScroll();
+  };
+
+  const handleNext = () => {
+    if (testimonials.length === 0) return;
+    setActiveIndex((prev) => {
+      const nextIndex = prev + 1;
+      if (nextIndex > testimonials.length - visibleCount) {
+        return 0;
+      }
+      return nextIndex;
+    });
+    resetAutoScroll();
+  };
+
+  const resetAutoScroll = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    if (testimonials.length <= visibleCount) return;
+    intervalRef.current = setInterval(() => {
+      setActiveIndex((prev) => {
+        const nextIndex = prev + 1;
+        if (nextIndex > testimonials.length - visibleCount) {
+          return 0;
+        }
+        return nextIndex;
+      });
+    }, 4000);
+  };
 
   return (
     <div style={{ backgroundColor: "var(--bg-warm)" }}>
@@ -457,71 +501,132 @@ export default function HomePage() {
           >
             Client Reviews
           </span>
-          <Title level={2} className="font-serif" style={{ color: "#ffffff", fontSize: "36px", marginBottom: "60px" }}>
-            What Our Clients Say
-          </Title>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", marginBottom: "50px" }}>
+            <Title level={2} className="font-serif" style={{ color: "#ffffff", fontSize: "36px", margin: 0 }}>
+              What Our Clients Say
+            </Title>
+            {(isLoggedIn || isAdmin) && (
+              <Button
+                type="primary"
+                href="/feedback"
+                size="small"
+                style={{
+                  borderRadius: "4px",
+                  height: "32px",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  backgroundColor: "var(--primary-color)",
+                  borderColor: "var(--primary-color)",
+                }}
+              >
+                Write a Review
+              </Button>
+            )}
+          </div>
 
-          <div style={{ position: "relative", overflow: "hidden", width: "100%", padding: "10px 0" }}>
-            <div
-              style={{
-                display: "flex",
-                gap: "24px",
-                transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
-                transform: `translateX(calc(-${activeIndex} * (100% + 24px) / ${visibleCount}))`,
-              }}
-            >
-              {testimonials.map((t, i) => {
-                const isInViewport = i >= activeIndex && i < activeIndex + visibleCount;
-                return (
-                  <div
-                    key={t._id}
-                    style={{
-                      flexShrink: 0,
-                      width: `calc((100% - ${(visibleCount - 1) * 24}px) / ${visibleCount})`,
-                      opacity: isInViewport ? 1 : 0.2,
-                      transition: "all 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
-                    }}
-                  >
-                    <Card
+          <div style={{ position: "relative", width: "100%", display: "flex", alignItems: "center" }}>
+            {/* Left Control Arrow */}
+            {testimonials.length > visibleCount && (
+              <Button
+                type="text"
+                shape="circle"
+                icon={<LeftOutlined style={{ color: "#ffffff", fontSize: "16px" }} />}
+                onClick={handlePrev}
+                style={{
+                  position: "absolute",
+                  left: "-55px",
+                  zIndex: 10,
+                  background: "rgba(255, 255, 255, 0.04)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  width: "40px",
+                  height: "40px",
+                }}
+                className="carousel-arrow-btn carousel-arrow-btn-left"
+              />
+            )}
+
+            <div style={{ position: "relative", overflow: "hidden", width: "100%", padding: "10px 0" }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "24px",
+                  transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+                  transform: `translateX(calc(-${activeIndex} * (100% + 24px) / ${visibleCount}))`,
+                }}
+              >
+                {testimonials.map((t, i) => {
+                  const isInViewport = i >= activeIndex && i < activeIndex + visibleCount;
+                  return (
+                    <div
+                      key={t._id}
                       style={{
-                        background: "rgba(255, 255, 255, 0.03)",
-                        border: "1px solid rgba(255, 255, 255, 0.08)",
-                        borderRadius: "16px",
-                        textAlign: "left",
-                        height: "100%",
-                        transition: "all 0.4s ease",
+                        flexShrink: 0,
+                        width: `calc((100% - ${(visibleCount - 1) * 24}px) / ${visibleCount})`,
+                        opacity: isInViewport ? 1 : 0.2,
+                        transition: "all 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
                       }}
-                      styles={{ body: { padding: "32px" } }}
-                      className="testimonial-carousel-card"
                     >
-                      <Rate
-                        disabled
-                        defaultValue={t.rating}
-                        key={t._id}
-                        style={{ color: "var(--primary-color)", marginBottom: "16px" }}
-                      />
-                      <Paragraph
+                      <Card
                         style={{
-                          color: "#eae4db",
-                          fontSize: "15px",
-                          fontStyle: "italic",
-                          lineHeight: "1.7",
-                          minHeight: "80px",
+                          background: "rgba(255, 255, 255, 0.03)",
+                          border: "1px solid rgba(255, 255, 255, 0.08)",
+                          borderRadius: "16px",
+                          textAlign: "left",
+                          height: "100%",
+                          transition: "all 0.4s ease",
                         }}
+                        styles={{ body: { padding: "32px" } }}
+                        className="testimonial-carousel-card"
                       >
-                        &ldquo;{t.quote}&rdquo;
-                      </Paragraph>
-                      <div style={{ marginTop: "20px" }}>
-                        <Title level={4} style={{ color: "#ffffff", margin: 0, fontSize: "17px" }}>
-                          {t.name}
-                        </Title>
-                        <Text style={{ color: "#d8cfc0", fontSize: "13px" }}>{t.place}</Text>
-                      </div>
-                    </Card>
-                  </div>
-                );
-              })}
+                        <Rate
+                          disabled
+                          defaultValue={t.rating}
+                          key={t._id}
+                          style={{ color: "var(--primary-color)", marginBottom: "16px" }}
+                        />
+                        <Paragraph
+                          style={{
+                            color: "#eae4db",
+                            fontSize: "15px",
+                            fontStyle: "italic",
+                            lineHeight: "1.7",
+                            minHeight: "80px",
+                          }}
+                        >
+                          &ldquo;{t.quote}&rdquo;
+                        </Paragraph>
+                        <div style={{ marginTop: "20px" }}>
+                          <Title level={4} style={{ color: "#ffffff", margin: 0, fontSize: "17px" }}>
+                            {t.name}
+                          </Title>
+                          <Text style={{ color: "#d8cfc0", fontSize: "13px" }}>{t.place}</Text>
+                        </div>
+                      </Card>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
+
+            {/* Right Control Arrow */}
+            {testimonials.length > visibleCount && (
+              <Button
+                type="text"
+                shape="circle"
+                icon={<RightOutlined style={{ color: "#ffffff", fontSize: "16px" }} />}
+                onClick={handleNext}
+                style={{
+                  position: "absolute",
+                  right: "-55px",
+                  zIndex: 10,
+                  background: "rgba(255, 255, 255, 0.04)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  width: "40px",
+                  height: "40px",
+                }}
+                className="carousel-arrow-btn carousel-arrow-btn-right"
+              />
+            )}
           </div>
           <style jsx>{`
             .testimonial-carousel-card:hover {
@@ -529,6 +634,22 @@ export default function HomePage() {
               border-color: rgba(138, 106, 74, 0.5) !important;
               transform: translateY(-4px) scale(1.01);
               box-shadow: 0 8px 32px rgba(138, 106, 74, 0.15) !important;
+            }
+            .carousel-arrow-btn {
+              transition: all 0.3s ease !important;
+              backdrop-filter: blur(4px);
+            }
+            .carousel-arrow-btn:hover {
+              background: var(--primary-color) !important;
+              border-color: var(--primary-color) !important;
+            }
+            @media (max-width: 1220px) {
+              .carousel-arrow-btn-left {
+                left: 10px !important;
+              }
+              .carousel-arrow-btn-right {
+                right: 10px !important;
+              }
             }
           `}</style>
         </div>

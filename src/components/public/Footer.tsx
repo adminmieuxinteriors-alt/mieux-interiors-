@@ -35,16 +35,7 @@ export default function Footer() {
               <Paragraph style={{ color: "#d8cfc0", fontSize: "14px", lineHeight: "1.6" }}>
                 Bespoke design studio based in Nadapuram and Kallachi, specializing in residential architecture, workspace design, and refined custom interiors.
               </Paragraph>
-              <Space size={16}>
-                <a
-                  href="https://www.instagram.com/mieux_interior_/"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ color: "#eae4db", fontSize: "20px" }}
-                >
-                  <InstagramOutlined style={{ transition: "color 0.3s" }} />
-                </a>
-              </Space>
+
             </Space>
           </Col>
 
@@ -87,7 +78,17 @@ export default function Footer() {
                   info@mieuxinteriors.com
                 </a>
               </div>
-
+              <div style={{ display: "flex", alignItems: "center", marginTop: "4px" }}>
+                <InstagramOutlined style={{ color: "var(--primary-color)", marginRight: "8px", fontSize: "16px" }} />
+                <a
+                  href="https://www.instagram.com/mieux_interior_/"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#eae4db" }}
+                >
+                  Instagram
+                </a>
+              </div>
             </Space>
           </Col>
         </Row>
