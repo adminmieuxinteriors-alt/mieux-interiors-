@@ -180,21 +180,6 @@ export default function Navbar() {
               Signup/Login
             </Button>
           )}
-
-          {!isAdmin && (
-            <Button
-              type="primary"
-              href="/contact"
-              style={{
-                borderRadius: "4px",
-                height: "40px",
-                padding: "0 20px",
-                fontWeight: 500,
-              }}
-            >
-              Book Consultation
-            </Button>
-          )}
         </Space>
       </nav>
 
@@ -300,21 +285,6 @@ export default function Navbar() {
               }}
             >
               Signup/Login
-            </Button>
-          )}
-
-          {!isAdmin && (
-            <Button
-              type="primary"
-              href="/contact"
-              onClick={toggleDrawer}
-              block
-              style={{
-                marginTop: "16px",
-                height: "45px",
-              }}
-            >
-              Book Consultation
             </Button>
           )}
         </Space>
