@@ -33,22 +33,32 @@ export async function middleware(req: NextRequest) {
   // 2. Protect public inner pages (gate all except homepage, login, register, and contact)
   const publicPaths = ["/", "/login", "/register", "/contact"];
   if (!publicPaths.includes(pathname)) {
-    if (!userToken) {
+    if (!userToken && !adminToken) {
       const loginUrl = new URL("/login", req.url);
       loginUrl.searchParams.set("redirect", pathname);
       return NextResponse.redirect(loginUrl);
     }
 
+    const tokenToVerify = userToken || adminToken;
+    const isUser = !!userToken;
+
     try {
       const secret = new TextEncoder().encode(JWT_SECRET);
-      await jwtVerify(userToken, secret);
+      await jwtVerify(tokenToVerify!, secret);
       return NextResponse.next();
     } catch {
-      // User token expired or invalid
+      // Token expired or invalid
       const loginUrl = new URL("/login", req.url);
       loginUrl.searchParams.set("redirect", pathname);
       const response = NextResponse.redirect(loginUrl);
-      response.cookies.delete("user_token");
+      if (isUser) {
+        response.cookies.delete("user_token");
+        response.cookies.delete("mieux_user_logged_in");
+      } else {
+        response.cookies.delete("admin_token");
+        response.cookies.delete("mieux_admin_logged_in");
+        response.cookies.delete("mieux_user_logged_in");
+      }
       return response;
     }
   }

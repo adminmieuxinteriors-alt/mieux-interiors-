@@ -56,6 +56,12 @@ export async function POST(req: NextRequest) {
       path: "/",
     });
 
+    response.cookies.set("mieux_admin_logged_in", "true", {
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+    });
+
     return response;
   } catch (error) {
     console.error("Login API Error:", error);

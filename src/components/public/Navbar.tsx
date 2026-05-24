@@ -10,6 +10,7 @@ import Logo from "./Logo";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<{ id: string; name: string; email: string } | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { message } = AntApp.useApp();
@@ -24,6 +25,7 @@ export default function Navbar() {
   ];
 
   useEffect(() => {
+    setIsAdmin(document.cookie.includes("mieux_admin_logged_in=true"));
     const fetchUserSession = async () => {
       try {
         const controller = new AbortController();
@@ -114,7 +116,7 @@ export default function Navbar() {
               href={item.href}
               onClick={(e) => {
                 const requiresLogin = ["/about", "/services", "/projects", "/feedback"].includes(item.href);
-                const isLoggedIn = document.cookie.includes("mieux_user_logged_in=true");
+                const isLoggedIn = document.cookie.includes("mieux_user_logged_in=true") || document.cookie.includes("mieux_admin_logged_in=true");
                 if (requiresLogin && !isLoggedIn) {
                   e.preventDefault();
                   message.warning("Please sign in or register to view this page.");
@@ -154,6 +156,20 @@ export default function Navbar() {
                 Sign Out
               </Button>
             </div>
+          ) : isAdmin ? (
+            <Button
+              type="default"
+              className="admin-panel-btn"
+              href="/admin/dashboard"
+              style={{
+                marginRight: 0,
+                borderColor: "var(--primary-color)",
+                color: "var(--primary-color)",
+                fontWeight: 500,
+              }}
+            >
+              View Admin Panel
+            </Button>
           ) : (
             <Button
               type="default"
@@ -214,7 +230,7 @@ export default function Navbar() {
               onClick={(e) => {
                 toggleDrawer();
                 const requiresLogin = ["/about", "/services", "/projects", "/feedback"].includes(item.href);
-                const isLoggedIn = document.cookie.includes("mieux_user_logged_in=true");
+                const isLoggedIn = document.cookie.includes("mieux_user_logged_in=true") || document.cookie.includes("mieux_admin_logged_in=true");
                 if (requiresLogin && !isLoggedIn) {
                   e.preventDefault();
                   message.warning("Please sign in or register to view this page.");
@@ -254,6 +270,21 @@ export default function Navbar() {
                 Sign Out
               </Button>
             </div>
+          ) : isAdmin ? (
+            <Button
+              type="default"
+              href="/admin/dashboard"
+              onClick={toggleDrawer}
+              block
+              style={{
+                height: "45px",
+                borderColor: "var(--primary-color)",
+                color: "var(--primary-color)",
+                fontWeight: 500,
+              }}
+            >
+              View Admin Panel
+            </Button>
           ) : (
             <Button
               type="default"

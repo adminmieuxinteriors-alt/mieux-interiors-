@@ -7,6 +7,7 @@ export async function POST() {
   });
 
   response.cookies.delete("admin_token");
+  response.cookies.delete("mieux_admin_logged_in");
   response.cookies.delete("mieux_user_logged_in");
 
   return response;
