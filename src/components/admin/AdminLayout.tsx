@@ -12,6 +12,7 @@ import {
   HomeOutlined,
   AppstoreOutlined,
   UserOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import Logo from "../public/Logo";
 
@@ -47,11 +48,12 @@ export default function AdminLayout({
 
   const getActiveKey = () => {
     if (pathname.startsWith("/admin/dashboard")) return "1";
-    if (pathname.startsWith("/admin/services")) return "2";
-    if (pathname.startsWith("/admin/projects")) return "3";
-    if (pathname.startsWith("/admin/inquiries")) return "4";
+    if (pathname.startsWith("/admin/settings")) return "2";
+    if (pathname.startsWith("/admin/services")) return "3";
+    if (pathname.startsWith("/admin/projects")) return "4";
     if (pathname.startsWith("/admin/testimonials")) return "5";
-    if (pathname.startsWith("/admin/users")) return "6";
+    if (pathname.startsWith("/admin/inquiries")) return "6";
+    if (pathname.startsWith("/admin/users")) return "7";
     return "1";
   };
 
@@ -63,18 +65,18 @@ export default function AdminLayout({
     },
     {
       key: "2",
+      icon: <SettingOutlined />,
+      label: <Link href="/admin/settings">Homepage Settings</Link>,
+    },
+    {
+      key: "3",
       icon: <AppstoreOutlined />,
       label: <Link href="/admin/services">Design Offerings</Link>,
     },
     {
-      key: "3",
+      key: "4",
       icon: <FolderOpenOutlined />,
       label: <Link href="/admin/projects">Featured Works</Link>,
-    },
-    {
-      key: "4",
-      icon: <MailOutlined />,
-      label: <Link href="/admin/inquiries">Inquiries</Link>,
     },
     {
       key: "5",
@@ -83,6 +85,11 @@ export default function AdminLayout({
     },
     {
       key: "6",
+      icon: <MailOutlined />,
+      label: <Link href="/admin/inquiries">Inquiries</Link>,
+    },
+    {
+      key: "7",
       icon: <UserOutlined />,
       label: <Link href="/admin/users">Registered Users</Link>,
     },

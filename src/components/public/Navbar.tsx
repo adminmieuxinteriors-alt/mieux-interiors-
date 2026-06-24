@@ -139,7 +139,7 @@ export default function Navbar() {
             </Link>
           ))}
         </Space>
-        
+
         <Space size={16}>
           {user ? (
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginRight: "8px" }}>
@@ -238,7 +238,7 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
-          
+
           {user ? (
             <div style={{ padding: "8px 0", borderBottom: "1px solid #f0ede8" }}>
               <div style={{ fontSize: "14px", color: "var(--text-secondary)", marginBottom: "8px" }}>

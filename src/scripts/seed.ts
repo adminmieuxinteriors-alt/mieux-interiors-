@@ -6,6 +6,7 @@ import Admin from "../models/Admin";
 import Project from "../models/Project";
 import Testimonial from "../models/Testimonial";
 import Service from "../models/Service";
+import Setting from "../models/Setting";
 import bcrypt from "bcryptjs";
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -158,6 +159,15 @@ async function runSeed() {
 
     await Service.insertMany(dummyServices);
     console.log("Dummy services seeded.");
+  }
+
+  // 5. Seed Settings (only if empty)
+  const settingCount = await Setting.countDocuments();
+  if (settingCount === 0) {
+    await Setting.create({
+      heroBgImage: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1800&q=80",
+    });
+    console.log("Default settings seeded.");
   }
 
   console.log("Seeding process completed successfully!");

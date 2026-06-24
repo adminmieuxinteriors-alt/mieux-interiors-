@@ -185,7 +185,7 @@ export default function LoginPage() {
       >
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "24px", gap: "8px" }}>
           <Link href="/" style={{ display: "flex" }}>
-            <Logo fontSize="26px" />
+            <Logo fontSize="26px" layout="vertical" />
           </Link>
           <span
             style={{

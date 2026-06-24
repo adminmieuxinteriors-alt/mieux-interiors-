@@ -190,3 +190,53 @@ export default function PublicProjectsPage() {
     </div>
   );
 }
+                            </span >
+                            <Title level={3} className="font-serif" style={{ fontSize: "22px", fontWeight: 300, margin: "4px 0", color: "var(--text-main)" }}>
+                              {project.title}
+                            </Title>
+                            <Text type="secondary" style={{ display: "block", fontSize: "12px", marginBottom: "12px" }}>
+                              {project.location}
+                            </Text>
+                            <Paragraph type="secondary" style={{ fontSize: "14px", margin: 0, lineHeight: "1.6" }}>
+                              {project.shortDescription}
+                            </Paragraph>
+                          </div >
+                        </MotionCard >
+                      </Link >
+                    </motion.div >
+                  </div >
+                ))}
+              </motion.div >
+            )}
+          </>
+        )}
+      </section >
+
+  <style jsx>{`
+        .masonry-grid {
+          column-count: 3;
+          column-gap: 32px;
+          width: 100%;
+        }
+        .masonry-item {
+          break-inside: avoid;
+          margin-bottom: 32px;
+        }
+        @media (max-width: 992px) {
+          .masonry-grid {
+            column-count: 2;
+            column-gap: 24px;
+          }
+          .masonry-item {
+            margin-bottom: 24px;
+          }
+        }
+        @media (max-width: 576px) {
+          .masonry-grid {
+            column-count: 1;
+          }
+        }
+      `}</style>
+    </div >
+  );
+}
