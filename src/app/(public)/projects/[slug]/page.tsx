@@ -71,7 +71,7 @@ export default function ProjectDetailsPage({
   useEffect(() => {
     async function loadProject() {
       try {
-        const res = await fetch(`/api/projects/${slug}`);
+        const res = await fetch(`/api/projects/${encodeURIComponent(slug)}`);
         const json = await res.json();
         if (json.success && json.data) {
           setProject(json.data);
