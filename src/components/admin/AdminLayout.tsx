@@ -66,7 +66,7 @@ export default function AdminLayout({
     {
       key: "2",
       icon: <SettingOutlined />,
-      label: <Link href="/admin/settings">Homepage Settings</Link>,
+      label: <Link href="/admin/settings">Home Page</Link>,
     },
     {
       key: "3",
